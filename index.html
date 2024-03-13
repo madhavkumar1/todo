@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #87CEEB, #fff);
+        margin: 0;
+        padding: 0;
+    }
+    #container {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #87CEEB;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #fff;
+    }
+    input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: calc(100% - 20px);
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    li {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+    li:last-child {
+        border-bottom: none;
+    }
+    .delete {
+        color: #ff5f5f;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .delete:hover {
+        color: #d40000;
+    }
+    .date {
+        font-size: 0.8em;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter task...">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+</div>
+
+<script>
+    window.onload = function() {
+        var savedTasks = localStorage.getItem("tasks");
+        if (savedTasks) {
+            document.getElementById("taskList").innerHTML = savedTasks;
+            addTaskListeners();
+        }
+    }
+
+    function addTask() {
+        var taskInput = document.getElementById("taskInput");
+        var taskList = document.getElementById("taskList");
+
+        if (taskInput.value.trim() !== "") {
+            var li = document.createElement("li");
+            
+            var span = document.createElement("span");
+            span.textContent = taskInput.value;
+            
+            var deleteButton = document.createElement("span");
+            deleteButton.textContent = "❌";
+            deleteButton.className = "delete";
+            deleteButton.onclick = function() {
+                li.remove();
+                saveTasks();
+            };
+
+            var dateSpan = document.createElement("span");
+            dateSpan.className = "date";
+            var date = new Date();
+            dateSpan.textContent = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+            li.appendChild(span);
+            li.appendChild(dateSpan);
+            li.appendChild(deleteButton);
+            
+            taskList.appendChild(li);
+            taskInput.value = "";
+
+            saveTasks();
+        } else {
+            alert("Please enter a task!");
+        }
+    }
+
+    function saveTasks() {
+        var taskList = document.getElementById("taskList").innerHTML;
+        localStorage.setItem("tasks", taskList);
+    }
+
+    function addTaskListeners() {
+        var deleteButtons = document.querySelectorAll(".delete");
+        deleteButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                this.parentElement.remove();
+                saveTasks();
+            });
+        });
+    }
+</script>
+</body>
+</html>
